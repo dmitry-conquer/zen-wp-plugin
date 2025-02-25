@@ -7,8 +7,8 @@ class ZEN_SettingsPage
 {
 
   private array $fields = [
-    'title' => ['label' => 'Title', 'type' => 'text'],
-    'results_per_view' => ['label' => 'Results per view', 'type' => 'number'],
+    'show_search_items' => ['label' => 'Show result items', 'type' => 'number'],
+    'enabled_post_types' => ['label' => 'Enanabled post types', 'type' => 'checkbox_list'],
   ];
 
   public function __construct()
@@ -56,7 +56,18 @@ class ZEN_SettingsPage
     if ($field_type === 'checkbox') {
       $checked = checked($value, '1', false);
       echo "<input type='checkbox' id='{$field_id}' name='zen_settings_options[{$field_id}]' value='1' {$checked} />";
-    } else {
+    } else if ($field_type === 'checkbox_list') {
+      $post_types = get_post_types(['public'=> true], 'objects');
+      foreach ($post_types as $post_type) {
+        $post_type_name = esc_attr($post_type->name);
+        $checked = in_array($post_type_name, (array) $value) ? 'checked' : '';
+        echo "<label>
+        <input type='checkbox' name='zen_settings_options[enabled_post_types][]' value='{$post_type_name}' {$checked}>
+        {$post_type->label}
+          </label><br>";
+      }
+    }
+     else {
       echo "<input type='{$field_type}' id='{$field_id}' name='zen_settings_options[{$field_id}]' value='" . esc_attr($value) . "' />";
     }
   }

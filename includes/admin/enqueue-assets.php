@@ -42,5 +42,8 @@ class ZEN_EnqueueAssets {
 
   public function enqueue_front() {
     $this->enqueue_assets('front');
+    wp_localize_script('zen-front-scripts', 'ajax_obj', [
+      'ajax_url' => admin_url('admin-ajax.php'),
+    ]);
   }
 }
