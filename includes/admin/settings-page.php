@@ -6,13 +6,11 @@ if (!defined('ABSPATH')) {
 class ZEN_SettingsPage
 {
 
-  private array $fields = [
-    'show_search_items' => ['label' => 'Show result items', 'type' => 'number'],
-    'enabled_post_types' => ['label' => 'Enanabled post types', 'type' => 'checkbox_list'],
-  ];
+  private array $fields = [];
 
   public function __construct()
   {
+    $this->fields = require ZEN_PLUGIN_PATH . 'includes/admin/settings-fields.php';
     add_action('admin_menu', [$this, 'register_settings_page']);
     add_action('admin_init', [$this, 'register_settings']);
   }
@@ -41,7 +39,7 @@ class ZEN_SettingsPage
         [$this, 'render_field'],
         'zen_settings_page',
         'zen_settings_section',
-        ['id' => $field_id, 'type' => $field['type']]
+        ['id' => $field_id, 'type' => $field['type'], 'default' => $field['default']]
       );
     }
   }
@@ -49,9 +47,10 @@ class ZEN_SettingsPage
   public function render_field(array $args)
   {
     $field_id = esc_attr($args['id']);
+    $field_default = $args['default'];
     $field_type = $args['type'];
     $options = get_option('zen_settings_options', []);
-    $value = $options[$field_id] ?? '';
+    $value = $options[$field_id] ?? $field_default ?? '';
 
     if ($field_type === 'checkbox') {
       $checked = checked($value, '1', false);
@@ -62,7 +61,7 @@ class ZEN_SettingsPage
         $post_type_name = esc_attr($post_type->name);
         $checked = in_array($post_type_name, (array) $value) ? 'checked' : '';
         echo "<label>
-        <input type='checkbox' name='zen_settings_options[enabled_post_types][]' value='{$post_type_name}' {$checked}>
+        <input type='checkbox' name='zen_settings_options[{$field_id}][]' value='{$post_type_name}' {$checked}>
         {$post_type->label}
           </label><br>";
       }

@@ -4,10 +4,10 @@ if (!defined('ABSPATH')) {
   die;
 }
 
+require_once ZEN_PLUGIN_PATH . 'includes/admin/functions.php';
 
 class ZEN_AdminSettings
 {
-
   public function __construct()
   {
     add_action('wp_ajax_get_search_data', [$this, 'get_search_data']);
@@ -24,27 +24,16 @@ class ZEN_AdminSettings
 
   public function get_search_data()
   {
-    $optins = get_option('zen_settings_options');
-    $showItems = $optins['show_search_items'] ?? 5;
-    $enabled_post_types = $optins['enabled_post_types'] ?? ['pages', 'posts'];
+    $options = get_option('zen_settings_options', []);
+    $fields = require ZEN_PLUGIN_PATH . 'includes/admin/settings-fields.php';
+   
+    foreach ($fields as $key => $field) {
+      $data[$key] = $options[$key] ?? $field['default'];
+    }
 
-    $post_type_map = [
-      'post' => 'posts',
-      'page' => 'pages',
-      'attachment' => 'media',
-      'user' => 'users',
-    ];
+    $data['siteName'] = parse_url(site_url(), PHP_URL_HOST);
+    $data['postTypes'] = map_post_types($options, $fields);
 
-    $api_post_types = array_map(function ($post_type) use ($post_type_map) {
-      return $post_type_map[$post_type] ?? $post_type;
-    }, $enabled_post_types);
-
-
-    $data = [
-      'siteName' => parse_url(site_url(), PHP_URL_HOST),
-      'postTypes' => $api_post_types,
-      'showItems' => $showItems,
-    ];
     wp_send_json($data);
   }
 }
