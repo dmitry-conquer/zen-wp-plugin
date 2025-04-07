@@ -31,8 +31,8 @@ class ZEN_AdminSettings
       $data[$key] = $options[$key] ?? $field['default'];
     }
 
-    $data['siteName'] = parse_url(site_url(), PHP_URL_HOST);
-    $data['postTypes'] = map_post_types($options, $fields);
+    $data['site_name'] = parse_url(site_url(), PHP_URL_HOST);
+    $data['post_types_to_search'] = map_post_types($options, $fields);
 
     wp_send_json($data);
   }

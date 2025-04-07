@@ -5,8 +5,8 @@ if (!defined('ABSPATH')) {
 }
 
 return [
-  'show_resulTS' => [
-      'label' => 'Show resultS',
+  'show_results' => [
+      'label' => 'Show results',
       'type' => 'number',
       'default' => 1,
   ],
@@ -15,9 +15,9 @@ return [
       'type' => 'checkbox_list',
       'default' => ['post', 'page'],
   ],
-  'just_text_value'=> [
-      'label' => 'Just text value',
-      'type' => 'text',
-      'default' => 'Defaule text value',
-  ],
+  'exclude_key_words' => [
+    'label' => 'Exclude from search',
+    'type' => 'textarea',
+    'default' => 'thankyou, thank you',
+],
 ];

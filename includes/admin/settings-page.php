@@ -18,8 +18,8 @@ class ZEN_SettingsPage
   public function register_settings_page()
   {
     add_menu_page(
-      'ZEN Settings Page',
-      'ZEN',
+      'WP Live Search Settings Page',
+      'WP Live Search',
       'manage_options',
       'zen_settings_page',
       [$this, 'zen_page'],
@@ -64,7 +64,9 @@ class ZEN_SettingsPage
         <input type='checkbox' name='zen_settings_options[{$field_id}][]' value='{$post_type_name}' {$checked}>
         {$post_type->label}
           </label><br>";
-      }
+      } 
+    } else if ($field_type === 'textarea') {
+      echo "<textarea type='{$field_type}' id='{$field_id}' name='zen_settings_options[{$field_id}]'>" . esc_attr($value) . "</textarea>";
     }
      else {
       echo "<input type='{$field_type}' id='{$field_id}' name='zen_settings_options[{$field_id}]' value='" . esc_attr($value) . "' />";
